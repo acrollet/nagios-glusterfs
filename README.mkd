@@ -6,25 +6,25 @@ Fork of glfs-health.sh [1] with changes for improved option handling and usernam
 With a substantial debt to Ian Rogers [2]
 
 You will need to define check commands similar to the following:
-  define command {
-    command_name    check_gluster_authed
-    command_line    sudo /usr/local/bin/glfs-health.sh -h $HOSTADDRESS$ -p 6996 -t tcp -n $ARG1$ -u $ARG2$ -p $ARG3$
-  }
-  define command {
-    command_name    check_gluster
-    command_line    sudo /usr/local/bin/glfs-health.sh -h $HOSTADDRESS$ -p 6996 -t tcp -n $ARG1$
-  }
+    define command {
+        command_name    check_gluster_authed
+        command_line    sudo /usr/local/bin/glfs-health.sh -h $HOSTADDRESS$ -p 6996 -t tcp -n $ARG1$ -u $ARG2$ -p $ARG3$
+    }
+    define command {
+        command_name    check_gluster
+        command_line    sudo /usr/local/bin/glfs-health.sh -h $HOSTADDRESS$ -p 6996 -t tcp -n $ARG1$
+    }
 
 glfs-health.sh needs to run as root, hence the sudo - run visudo and add a line like this:
-  echo "nagios  ALL=(ALL)  NOPASSWD: /usr/local/bin/glfs-health.sh" >> /etc/sudoers
+    echo "nagios  ALL=(ALL)  NOPASSWD: /usr/local/bin/glfs-health.sh" >> /etc/sudoers
 
 Then define a service using your check command:
-  define service {
-    hostgroup_name                  gluster-servers
-    service_description             glusterfsd
-    check_command                   check_gluster_authed!fsname!username!password
-    use                             generic-service
-  }
+    define service {
+        hostgroup_name                  gluster-servers
+        service_description             glusterfsd
+        check_command                   check_gluster_authed!fsname!username!password
+        use                             generic-service
+    }
 
 More info is available in the Nagios Documentation. [3]
 
