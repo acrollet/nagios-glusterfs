@@ -1,0 +1,6 @@
+# About
+
+Fork of glfs-health.sh [1] with changes for improved option handling and username/password support.
+
+
+[1]: http://git.gluster.com/?p=users/avati/glfs-health.git;a=tree;h=refs/heads/master;hb=master
