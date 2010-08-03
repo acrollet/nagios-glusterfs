@@ -101,6 +101,7 @@ function cleanup()
 function watsup()
 {
     ans="CRITICAL: Host unreachable"
+    exitcode=2
 
     for i in $(seq 1 10); do
         if grep -iq 'connection refused' $log; then
