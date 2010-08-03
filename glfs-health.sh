@@ -5,12 +5,14 @@
 #
 
 
-DEBUG=true
+DEBUG=false
 
-DEFAULT_HOST=localhost
-DEFAULT_PORT=6996
-DEFAULT_TYPE=tcp
-DEFAULT_NAME=client
+HOST='localhost'
+PORT=6996
+TYPE='tcp'
+NAME='client'
+USERNAME=''
+PASSWORD=''
 
 
 conf=/tmp/nagios.glusterfs.vol.$$;
@@ -20,30 +22,19 @@ glfs=/usr/sbin/glusterfs;
 
 exitcode=0
 
-function parse_cmd_args()
-{
-    HOST=$DEFAULT_HOST;
-    PORT=$DEFAULT_PORT;
-    TYPE=$DEFAULT_TYPE;
-    NAME=$DEFAULT_NAME;
-
-    if test "x$1" != "x"; then
-        HOST=$1
-    fi
-
-    if test "x$2" != "x"; then
-        PORT=$2
-    fi
-
-    if test "x$3" != "x"; then
-        TYPE=$3
-    fi
-
-    if test "x$4" != "x"; then
-        NAME=$4
-    fi
-}
-
+while getopts h:p:t:n:u:P: OPTION
+do
+  case "$OPTION" in
+  h)    HOST="${OPTARG}";;
+  p)    PORT="${OPTARG}";;
+  t)    TYPE="${OPTARG}";;
+  n)    NAME="${OPTARG}";;
+  u)    USERNAME="${OPTARG}";;
+  P)    PASSWORD="${OPTARG}";;
+  \?)  print >&2 "Usage: $0 [-h host] [-p port] [-t type] [-n fsname] [-u username] [-P password] ..."
+    exit 1;;
+  esac
+done
 
 function spit_vol()
 {
@@ -56,6 +47,19 @@ volume client
   option transport-type $TYPE
   option remote-subvolume $NAME
   option ping-timeout 2
+EOF
+
+if [[ "${USERNAME}" != '' ]]
+then
+  echo "  option username ${USERNAME}" >> $conf
+fi
+
+if [[ "${PASSWORD}" != '' ]]
+then
+  echo "  option password ${PASSWORD}" >> $conf
+fi
+
+cat >> $conf <<EOF
 end-volume
 
 volume server
@@ -138,8 +142,6 @@ function main()
 {
     trap cleanup EXIT;
 
-    parse_cmd_args "$@"
-
     spit_vol;
     glfs;
 
@@ -147,5 +149,5 @@ function main()
 }
 
 
-main "$@"
+main
 
