@@ -18,7 +18,8 @@ PASSWORD=''
 conf=/tmp/nagios.glusterfs.vol.$$;
 log=/tmp/nagios.glusterfs.log.$$;
 pid=/tmp/nagios.glusterfs.pid.$$;
-glfs=/usr/sbin/glusterfs;
+PATH='/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/opt/sbin'
+glfs=`which glusterfs`
 
 exitcode=0
 
