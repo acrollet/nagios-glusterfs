@@ -93,6 +93,11 @@ function glfs()
 function cleanup()
 {
     kill -TERM `cat $pid`;
+    # make really sure the process exits, otherwise subsequent checks will fail
+    if ps -p `cat $pid`
+    then
+      kill -9 `cat $pid`
+    fi
     rm -rf $conf $log $pid;
     exit $exitcode
 }
